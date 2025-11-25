@@ -183,6 +183,7 @@ def main():
     st.markdown("---")
 
 
+
     # ===========================
     # QUERY 3 — Location Map
     # ===========================
@@ -194,7 +195,7 @@ def main():
         # Drop rows without coordinates
         map_df = filtered_df.dropna(subset=["Latitude", "Longitude"]).copy()
 
-        # Make sure lat/long are valid floats and in real ranges
+        # Make sure lat/long are numeric and valid
         map_df["Latitude"] = pd.to_numeric(map_df["Latitude"], errors="coerce")
         map_df["Longitude"] = pd.to_numeric(map_df["Longitude"], errors="coerce")
         map_df = map_df.dropna(subset=["Latitude", "Longitude"])
@@ -206,36 +207,9 @@ def main():
         if map_df.empty:
             st.write("No valid numeric coordinates available.")
         else:
-            view_state = pdk.ViewState(
-                latitude=map_df["Latitude"].mean(),
-                longitude=map_df["Longitude"].mean(),
-                zoom=5,
-                pitch=0,
-                bearing=0,
-            )
-
-            layer = pdk.Layer(
-                "ScatterplotLayer",
-                data=map_df,
-                get_position=["Longitude", "Latitude"],
-                get_radius=4000,
-                get_fill_color=[200, 30, 0, 160],
-                pickable=True,
-            )
-
-            # Use simple text tooltip (more robust than HTML here)
-            tooltip = {
-                "text": "Ship: {ShipName}\nYear: {Year}\nCause: {Cause}"
-            }
-
-            deck = pdk.Deck(
-                layers=[layer],
-                initial_view_state=view_state,
-                tooltip=tooltip,
-                map_style=None,  # or "mapbox://styles/mapbox/light-v9" if you prefer
-            )
-
-            st.pydeck_chart(deck)
+            # Streamlit expects the columns to be called 'lat' and 'lon'
+            map_df = map_df.rename(columns={"Latitude": "lat", "Longitude": "lon"})
+            st.map(map_df[["lat", "lon"]])
 
     st.markdown("---")
 
