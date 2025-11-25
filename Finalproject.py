@@ -1,17 +1,3 @@
-CS230:      Section 8
-Data:       Shipwreck Database
-URL:
-
-Description:
-This program loads shipwreck data and lets the user filter by year, vessel type,
-and fatality. It reports how many wrecks match the filters, shows trends in
-number of wrecks per year, main causes of wrecks, a map of wreck locations,
-and a comparison of fatal vs non-fatal wrecks.
-
-References:
-- NJ Maritime Museum Shipwreck Database
-- ChatGPT was used to help structure the project and code queries.
-"""
 
 # ---------- IMPORTS ----------
 import pandas as pd
