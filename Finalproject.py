@@ -65,10 +65,7 @@ def load_data(filename="ShipwreckDatabase (1).csv", nrows=None):
 
 # #[FUNCRETURN2]  function returns two or more values
 def filter_data(df, year_range, ship_types=None, fatal_only=False):
-    """
-    Filter the DataFrame based on year range, ship type list, and fatal flag.
-    Returns a filtered DataFrame and the number of rows.
-    """
+   
     start_year, end_year = year_range
 
     # #[FILTER1]  filter by one condition (year range)
