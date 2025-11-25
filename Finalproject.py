@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 # ---------------------------------------------------------
 
 # #[FUNC2P]  function with 2+ params, one has a default value
-def load_data(filename="ShipwreckDatabase (1).csv", nrows=None):
+def load_data(filename="ShipwreckDatabase (1).xlsx", nrows=None):
 
     df = pd.read_csv(filename, nrows=nrows)
 
