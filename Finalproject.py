@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 # #[FUNC2P]  function with 2+ params, one has a default value
 def load_data(filename="ShipwreckDatabase (1).xlsx", nrows=None):
 
-    df = pd.read_csv(filename, nrows=nrows)
+    df = pd.read_excel(filename, nrows=nrows)
 
     # Rename long column names to simple ones
     df = df.rename(
