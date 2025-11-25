@@ -182,6 +182,7 @@ def main():
 
     st.markdown("---")
 
+
     # ===========================
     # QUERY 3 — Location Map
     # ===========================
@@ -190,7 +191,17 @@ def main():
     if filtered_df.empty:
         st.write("No data available.")
     else:
-        map_df = filtered_df.dropna(subset=["Latitude", "Longitude"])
+        # Drop rows without coordinates
+        map_df = filtered_df.dropna(subset=["Latitude", "Longitude"]).copy()
+
+        # Make sure lat/long are valid floats and in real ranges
+        map_df["Latitude"] = pd.to_numeric(map_df["Latitude"], errors="coerce")
+        map_df["Longitude"] = pd.to_numeric(map_df["Longitude"], errors="coerce")
+        map_df = map_df.dropna(subset=["Latitude", "Longitude"])
+        map_df = map_df[
+            (map_df["Latitude"].between(-90, 90))
+            & (map_df["Longitude"].between(-180, 180))
+        ]
 
         if map_df.empty:
             st.write("No valid numeric coordinates available.")
@@ -198,10 +209,11 @@ def main():
             view_state = pdk.ViewState(
                 latitude=map_df["Latitude"].mean(),
                 longitude=map_df["Longitude"].mean(),
-                zoom=5
+                zoom=5,
+                pitch=0,
+                bearing=0,
             )
 
-            # #[MAP]  detailed PyDeck map with tooltip
             layer = pdk.Layer(
                 "ScatterplotLayer",
                 data=map_df,
@@ -211,17 +223,16 @@ def main():
                 pickable=True,
             )
 
+            # Use simple text tooltip (more robust than HTML here)
             tooltip = {
-                "html": "<b>Ship:</b> {ShipName}<br/>"
-                        "<b>Year:</b> {Year}<br/>"
-                        "<b>Cause:</b> {Cause}",
-                "style": {"backgroundColor": "steelblue", "color": "white"},
+                "text": "Ship: {ShipName}\nYear: {Year}\nCause: {Cause}"
             }
 
             deck = pdk.Deck(
                 layers=[layer],
                 initial_view_state=view_state,
-                tooltip=tooltip
+                tooltip=tooltip,
+                map_style=None,  # or "mapbox://styles/mapbox/light-v9" if you prefer
             )
 
             st.pydeck_chart(deck)
